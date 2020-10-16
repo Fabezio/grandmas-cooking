@@ -2,6 +2,8 @@ const express = require('express')
 const ejs = require('ejs')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
+const flash = require('connect-flash')
 
 const app = express()
 
@@ -9,10 +11,18 @@ app.set("view engine", "ejs")
 app.use(express.static("public"))
 app.use(bodyParser.urlencoded({extended: false}))
 
-const db = "grandmasDB"
+const PORT = 3000
+const pw = "C0denCQRT"
+const db = "cooking"
+const coll_1 = "user"
+// const userOne = coll_1
+// console.log(`collection principale: ${coll_1}`)
+// const atlasUrl = "mongodb+srv://fabezio:<password>@cluster0.0gg5s.mongodb.net/<dbname>?retryWrites=true&w=majority"
+const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.0gg5s.mongodb.net/${db}?retryWrites=true&w=majority`
 
 mongoose.set("useUnifiedTopology", true)
-mongoose.connect(`mongodb://localhost/${db}`, {useNewUrlParser: true})
+mongoose.connect(atlasUrl, {useNewUrlParser: true})
+// mongoose.connect(`mongodb://localhost/${db}`, {useNewUrlParser: true})
 
 // const Recipes = new mongoose.Schema({
 //     name: String,
@@ -43,4 +53,11 @@ app.route("/about")
 // app.route("/newfavorite")
 //     .get((req, res) => res.render("newfavorite", {}))
 
-app.listen(3000, () => console.log("serveur démarré sur port 3000"))
+app.listen(PORT, () => {
+    console.log("Serveur à l'écoute... ")
+    console.log(`port utilisé: ${PORT}`)
+    console.log(`base de données: ${db}`)
+    console.log(`collection principale: ${coll_1}`)
+
+
+})
