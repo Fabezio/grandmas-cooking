@@ -120,6 +120,12 @@ h1 a:hover {
     border-color: #ffda79;
 }
 
+.icon {
+    position: relative;
+    top: 1.65rem;
+    right: 1.33rem;
+}
+
 
 
 

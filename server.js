@@ -14,14 +14,22 @@ app.use(bodyParser.urlencoded({extended: false}))
 const PORT = 3000
 const pw = "C0denCQRT"
 const db = "cooking"
-const coll_1 = "user"
+// const coll_1 = "user"
 // const userOne = coll_1
 // console.log(`collection principale: ${coll_1}`)
 // const atlasUrl = "mongodb+srv://fabezio:<password>@cluster0.0gg5s.mongodb.net/<dbname>?retryWrites=true&w=majority"
-const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.0gg5s.mongodb.net/${db}?retryWrites=true&w=majority`
+const User = require("./models/user")
 
-mongoose.set("useUnifiedTopology", true)
-mongoose.connect(atlasUrl, {useNewUrlParser: true})
+
+const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.0gg5s.mongodb.net/${db}?retryWrites=true&w=majority`
+// mongoose.set("useUnifiedTopology", true)
+mongoose.connect(
+    atlasUrl, 
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }
+)
 // mongoose.connect(`mongodb://localhost/${db}`, {useNewUrlParser: true})
 
 // const Recipes = new mongoose.Schema({
@@ -38,6 +46,21 @@ app.route("/login")
 
 app.route("/signup")
     .get((req, res) => res.render("signup", {}))
+    .post((req, res) => {
+        const user = {
+            username: req.body.username,
+            password: req.body.password
+        }
+        console.log(user)
+        User.create(user, err => {
+            if (err) console.log(err )
+            else {
+                console.log("User created")
+                res.render("index", {})
+            }
+        })
+            
+    })
 
 app.route("/about")
     .get((req, res) => res.render("about", {}))
@@ -57,7 +80,7 @@ app.listen(PORT, () => {
     console.log("Serveur à l'écoute... ")
     console.log(`port utilisé: ${PORT}`)
     console.log(`base de données: ${db}`)
-    console.log(`collection principale: ${coll_1}`)
+    // console.log(`collection principale: ${coll_1}`)
 
 
 })
