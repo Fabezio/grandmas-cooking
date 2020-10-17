@@ -55,7 +55,7 @@ app.route("/login")
                     bcrypt.compare(req.body.password, foundUser.password, (error, result) => {
                         if (error) {
                             console.log(error) 
-                            res.render("index", {})
+                            // res.render("index", {})
                         }   
                         else {
                             
@@ -63,11 +63,16 @@ app.route("/login")
                                 
                                 console.log(`Bonjour, ${foundUser.username}`) 
                                 res.render("index", {data: foundUser})
-                            }
+                            } else {
+                                console.log("pas de pot") 
+                                res.send("pas de pot")
+                            }   
+                                
+                            
                            
                         }
                     })
-                }  else res.send("pense à t'incrire!")
+                } else res.send("pense à t'incrire!")
         
             }
         })
@@ -82,11 +87,14 @@ app.route("/login")
                 username: req.body.username,
                 password: hash
             }
-            console.log(hash)
+            // console.log(hash)
             User.create(user, err => {
-                if (err) console.log(err )
+                if (err) {
+                    console.log(err)
+                    res.send("un problème est survenu, recommence")
+                }
                 else {
-                    console.log("User created")
+                    console.log(`Bienvenue, ${user.username}!`)
                     res.render("index", {})
                 }
             })
