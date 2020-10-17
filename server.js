@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
+const bcrypt = require('bcrypt')
 
 const app = express()
 
@@ -19,6 +20,7 @@ const db = "cooking"
 // console.log(`collection principale: ${coll_1}`)
 // const atlasUrl = "mongodb+srv://fabezio:<password>@cluster0.0gg5s.mongodb.net/<dbname>?retryWrites=true&w=majority"
 const User = require("./models/user")
+const { base } = require('./models/user')
 
 
 const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.0gg5s.mongodb.net/${db}?retryWrites=true&w=majority`
@@ -43,22 +45,60 @@ app.route("/")
 
 app.route("/login")
     .get((req, res) => res.render("login", {}))
-
-app.route("/signup")
-    .get((req, res) => res.render("signup", {}))
     .post((req, res) => {
-        const user = {
-            username: req.body.username,
-            password: req.body.password
-        }
-        console.log(user)
-        User.create(user, err => {
-            if (err) console.log(err )
+        User.findOne({username: req.body.username}, (err, foundUser) => {
+            // console.log (err || "c'est ok")
+            if(err) console.log(err)
             else {
-                console.log("User created")
-                res.render("index", {})
+                if(foundUser) {
+                    const saltRounds = 10
+                    bcrypt.compare(req.body.password, foundUser.password, (error, result) => {
+                        if (error) {
+                            console.log(error) 
+                            res.render("index", {})
+                        }   
+                        else {
+                            
+                            if(result) {
+                                
+                                console.log(`Bonjour, ${foundUser.username}`) 
+                                res.render("index", {data: foundUser})
+                            }
+                           
+                        }
+                    })
+                }  else res.send("pense à t'incrire!")
+        
             }
         })
+        
+    })
+    app.route("/signup")
+    .get((req, res) => res.render("signup", {}))
+    .post((req, res) => {
+        const saltRounds = 10
+        bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+            const user = {
+                username: req.body.username,
+                password: hash
+            }
+            console.log(hash)
+            User.create(user, err => {
+                if (err) console.log(err )
+                else {
+                    console.log("User created")
+                    res.render("index", {})
+                }
+            })
+
+        })
+        // const user = {
+            //     username: req.body.username,
+        // console.log(user)
+        // User.find({username: username})
+        //     password: req.body.password
+        // }
+        // console.log(user)
             
     })
 
