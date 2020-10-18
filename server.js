@@ -26,23 +26,22 @@ app.use(bodyParser.urlencoded({extended: false}))
 const PORT = 3000
 const pw = "C0denCQRT"
 const db = "cooking"
-// const coll_1 = "user"
-// const userOne = coll_1
-// console.log(`collection principale: ${coll_1}`)
-// const atlasUrl = "mongodb+srv://fabezio:<password>@cluster0.0gg5s.mongodb.net/<dbname>?retryWrites=true&w=majority"
 const { base } = require('./models/user')
 
 
 const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.0gg5s.mongodb.net/${db}?retryWrites=true&w=majority`
-// mongoose.set("useUnifiedTopology", true)
+
 mongoose.connect(
     atlasUrl, 
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }
-    )
-    const User = require("./models/user")
+)
+
+
+const User = require("./models/user")
+
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
@@ -53,45 +52,21 @@ app.route("/")
 app.route("/login")
     .get((req, res) => res.render("login", {}))
     .post((req, res) => {
-        User.findOne({username: req.body.username}, (err, foundUser) => {
-            // console.log (err || "c'est ok")
-            if(err) console.log(err)
-            else {
-                if(foundUser) {
-                    const saltRounds = 10
-                    bcrypt.compare(req.body.password, foundUser.password, (error, result) => {
-                        if (error) {
-                            console.log(error) 
-                            // res.render("index", {})
-                        }   
-                        else {
-                            
-                            if(result) {
-                                
-                                console.log(`Bonjour, ${foundUser.username}`) 
-                                res.render("index", {data: foundUser})
-                            } else {
-                                console.log("pas de pot") 
-                                res.send("pas de pot")
-                            }   
-                                
-                            
-                           
-                        }
-                    })
-                } else res.send("pense à t'incrire!")
-        
-            }
+        const user = new User({
+            username: req.body.username,
+            password: req.body.password
         })
-        
+        req.login(user, err => {
+            if(err) console.log(err)
+            else {passport.authenticate("local")(req, res, () => {res.redirect("/dashboard")})}
+        })
     })
-    app.route("/signup")
+
+app.route("/signup")
     .get((req, res) => res.render("signup", {}))
     .post((req, res) => {
-        // const saltRounds = 10
         const newUser =  new User({
-            username: req.body.username,
-            // password: hash
+            username: req.body.username
         })
         User.register(newUser, req.body.password, (err, user) => {
             if(err) {
@@ -101,38 +76,21 @@ app.route("/login")
                 passport.authenticate("local")(req, res, function() {
                     console.log(`Bienvenue, ${user.username}`)
                     res.redirect("signup")
-
                 })
             }
-
         })
-        // bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-        //     // else 
-        //     // console.log(hash)
-        //     User.create(user, err => {
-        //         if (err) {
-        //             console.log(err)
-        //             res.send("un problème est survenu, recommence")
-        //         }
-        //         else {
-        //             console.log(`Bienvenue, ${user.username}!`)
-        //             res.render("index", {})
-        //         }
-        //     })
-
-        // })
-        // const user = {
-            //     username: req.body.username,
-        // console.log(user)
-        // User.find({username: username})
-        //     password: req.body.password
-        // }
-        // console.log(user)
-            
     })
+    
+app.get("/logout", (req, res) => {
+    req.logout()
+    res.redirect("/login")
+})
 
 app.route("/about")
     .get((req, res) => res.render("about", {}))
+
+app.route("/dashboard")
+    .get((req, res) => res.render("dashboard", {}))
 
 // app.route("/forgot")
 //     .get((req, res) => res.render("forgot", {}))
@@ -145,11 +103,9 @@ app.route("/about")
 // app.route("/newfavorite")
 //     .get((req, res) => res.render("newfavorite", {}))
 
+
 app.listen(PORT, () => {
     console.log("Serveur à l'écoute... ")
     console.log(`port utilisé: ${PORT}`)
     console.log(`base de données: ${db}`)
-    // console.log(`collection principale: ${coll_1}`)
-
-
 })
