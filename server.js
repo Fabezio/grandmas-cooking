@@ -8,6 +8,10 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 const passport = require('passport')
 const passportLocalStrategy = require('passport-local-mongoose')
+const randToken = require('rand-token')
+
+const User = require("./models/user")
+const Reset = require("./models/reset")
 
 const app = express()
 app.use(session({
@@ -38,9 +42,6 @@ mongoose.connect(
         useUnifiedTopology: true
     }
 )
-
-
-const User = require("./models/user")
 
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
@@ -92,8 +93,25 @@ app.route("/about")
 app.route("/dashboard")
     .get((req, res) => res.render("dashboard", {}))
 
-// app.route("/forgot")
-//     .get((req, res) => res.render("forgot", {}))
+app.route("/forgot")
+    .get((req, res) => res.render("forgot", {}))
+    .post((req, res) => {
+        User.findOne({username: req.body.username}, (err, userFound) => {
+            if(err) {
+                console.log(err) 
+                res.redirect('.login')
+            }
+            else {
+                const token = randToken.generate(16)
+                // console.log(token)
+                Reset.create({
+                    username: userFound.username,
+                    resetPassordToken: token,
+                    resetPasswordExpires: Date.now() + 3600000
+                })
+            }
+        })
+    })
 
 // app.route("/edit")
 //     .get((req, res) => res.render("edit", {}))
