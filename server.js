@@ -34,7 +34,8 @@ const db = "cooking"
 const { base } = require('./models/user')
 
 
-const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.0gg5s.mongodb.net/${db}?retryWrites=true&w=majority`
+const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.jrkt0.mongodb.net/${db}?retryWrites=true&w=majority`
+// const atlasUrl = `mongodb+srv://fabezio:<password>@cluster0.jrkt0.mongodb.net/<dbname>?retryWrites=true&w=majority`
 
 mongoose.connect(
     atlasUrl, 
@@ -118,19 +119,19 @@ app.route("/forgot")
                         password: 'Marajade1'
                     }
                 })
-                console.log(transporter.auth)
+                // console.log(transporter.auth)
                 const mailOptions = {
                     from: 'cooking.tester1064@gmail.com',
                     to: req.body.username,
                     subject: "link to reset your password",
                     text: `click here to reset your password: http://localhost:3000/reset${token}`
                 }
-                console.log(mailOptions)
-                console.log('reset mail ready to be sent')
                 transporter.sendMail(mailOptions, (err, response) => {
                     if (err) console.log(err)
                     else {
-                        response.redirect("/") 
+                        console.log(mailOptions)
+                        console.log('reset mail ready to be sent')
+                        response.redirect("/login") 
                         console.log('reset mail has been sent')
                     }
                 })
