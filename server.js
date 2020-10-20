@@ -9,6 +9,7 @@ const session = require('express-session')
 const passport = require('passport')
 const passportLocalStrategy = require('passport-local-mongoose')
 const randToken = require('rand-token')
+const nodemailer = require('nodemailer')
 
 const User = require("./models/user")
 const Reset = require("./models/reset")
@@ -84,6 +85,7 @@ app.route("/signup")
     
 app.get("/logout", (req, res) => {
     req.logout()
+    console.log('utilisateur déconnecté')
     res.redirect("/login")
 })
 
@@ -103,15 +105,42 @@ app.route("/forgot")
             }
             else {
                 const token = randToken.generate(16)
-                // console.log(token)
+                console.log(token)
                 Reset.create({
                     username: userFound.username,
                     resetPassordToken: token,
                     resetPasswordExpires: Date.now() + 3600000
                 })
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'cooking.tester1064@gmail.com',
+                        password: 'Marajade1'
+                    }
+                })
+                console.log(transporter.auth)
+                const mailOptions = {
+                    from: 'cooking.tester1064@gmail.com',
+                    to: req.body.username,
+                    subject: "link to reset your password",
+                    text: `click here to reset your password: http://localhost:3000/reset${token}`
+                }
+                console.log(mailOptions)
+                console.log('reset mail ready to be sent')
+                transporter.sendMail(mailOptions, (err, response) => {
+                    if (err) console.log(err)
+                    else {
+                        response.redirect("/") 
+                        console.log('reset mail has been sent')
+                    }
+                })
             }
         })
     })
+
+app.get('/reset',(req, res) => {
+    res.render('reset', {})
+})
 
 // app.route("/edit")
 //     .get((req, res) => res.render("edit", {}))

@@ -12,7 +12,8 @@
 <body>
     <section id="titre">
         <div class="container-fluid">
-            <nav class="navbar navbar-expand-lg">
+            <%- include('partials/navbar') %> 
+            <!-- <nav class="navbar navbar-expand-lg">
                 <h1 style="color:black"><a href="/" style="text-decoration:none">Grandma's Cooking</a></h1>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -32,7 +33,7 @@
                         </li>
                     </ul>
                 </div>
-            </nav>
+            </nav> -->
 
 
             <div class="row">
@@ -41,7 +42,9 @@
                         <h1 style="color:#badc58">Choose a new Password</h1>
                         <form action="/reset/" method="POST">
                             <div>
-                                <div class="field">
+                                <%- include('partials/FormPW') -%>
+                                <%- include('partials/FormPW2') -%>
+                                <!-- <div class="field">
                                     <div>
                                         <i class="user icon"></i>
                                         <input type="password" class="form-control" placeholder="password" name="password" required autocomplete="off">
@@ -52,7 +55,7 @@
                                         <i class="lock icon"></i>
                                         <input type="password" class="form-control" placeholder="password2" name="password2" required autocomplete="off">
                                     </div>
-                                </div>
+                                </div> -->
                                 <button type="submit" class="btn btn-success" style="margin-top:15px;">Update</button>
                             </div>
                         </form>
