@@ -88,17 +88,8 @@ app.route("/signup")
         })
     })
     
-app.get("/logout", (req, res) => {
-    req.logout()
-    console.log('utilisateur déconnecté')
-    res.redirect("/login")
-})
-
 app.route("/about")
     .get((req, res) => res.render("about", {}))
-
-app.route("/dashboard")
-    .get((req, res) => res.render("dashboard", {}))
 
 app.route("/forgot")
     .get((req, res) => res.render("forgot", {}))
@@ -147,13 +138,51 @@ app.get('/reset',(req, res) => {
     res.render('reset', {})
 })
 
-// app.route("/edit")
-//     .get((req, res) => res.render("edit", {}))
+app.route('/reset/:token')
+    .get((req, res) => {
+        Reset.findOne({
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: {$gt: Date.now()}
+        }, (err, obj) => {
+            if (err) {
+                console.log("Token expired... please resend your mail")
+                res.redirect('/forgot')
+            } else {
+                res.render("reset", {token: req.params.token})
+            }
+        })
+    })
+    .post((req, res) => {
+        
+    })
 
-// app.route("/newfavorite")
-//     .get((req, res) => res.render("newfavorite", {}))
-// app.route("/newfavorite")
-//     .get((req, res) => res.render("newfavorite", {}))
+app.get("/logout", (req, res) => {
+    req.logout()
+    console.log('utilisateur déconnecté')
+    res.redirect("/login")
+})
+
+// menu abonné
+app.route("/dashboard")
+    .get((req, res) => res.render("dashboard", {}))
+
+app.get("/dashboard/myreceipes", (req, res) =>{
+    res.render("receipe", {})
+} )
+app.get("/dashboard/favourites", (req, res) =>{
+    res.render("favourites", {})
+} )
+app.get("/dashboard/schedule", (req, res) =>{
+    res.render("schedule", {})
+} )
+app.get("/dashboard/about", (req, res) =>{
+    res.render("about", {})
+} )
+// app.get("/edit", (req, res) =>{
+//     res.render("edit", {})
+// } )
+
+
 
 
 app.listen(PORT, () => {
