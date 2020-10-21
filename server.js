@@ -35,10 +35,12 @@ const { base } = require('./models/user')
 
 
 const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.jrkt0.mongodb.net/${db}?retryWrites=true&w=majority`
+const localUrl = `mongodb://localhost/${db}`
 // const atlasUrl = `mongodb+srv://fabezio:<password>@cluster0.jrkt0.mongodb.net/<dbname>?retryWrites=true&w=majority`
+const url = localUrl
 
 mongoose.connect(
-    atlasUrl, 
+    url, 
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -49,6 +51,8 @@ passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
+// chemins _________________
+// principal (hors connexion)
 app.route("/")
     .get((req, res) => res.render("index", {}))
 
@@ -78,7 +82,7 @@ app.route("/signup")
             } else {
                 passport.authenticate("local")(req, res, function() {
                     console.log(`Bienvenue, ${user.username}`)
-                    res.redirect("signup")
+                    res.redirect("/login")
                 })
             }
         })
@@ -102,7 +106,7 @@ app.route("/forgot")
         User.findOne({username: req.body.username}, (err, userFound) => {
             if(err) {
                 console.log(err) 
-                res.redirect('.login')
+                res.redirect('/login')
             }
             else {
                 const token = randToken.generate(16)
@@ -116,7 +120,7 @@ app.route("/forgot")
                     service: 'gmail',
                     auth: {
                         user: 'cooking.tester1064@gmail.com',
-                        password: 'Marajade1'
+                        pass: 'Marajade1'
                     }
                 })
                 // console.log(transporter.auth)
@@ -124,14 +128,14 @@ app.route("/forgot")
                     from: 'cooking.tester1064@gmail.com',
                     to: req.body.username,
                     subject: "link to reset your password",
-                    text: `click here to reset your password: http://localhost:3000/reset${token}`
+                    text: `click here to reset your password: http://localhost:3000/reset/${token}`
                 }
                 transporter.sendMail(mailOptions, (err, response) => {
                     if (err) console.log(err)
                     else {
-                        console.log(mailOptions)
+                        // console.log(mailOptions)
                         console.log('reset mail ready to be sent')
-                        response.redirect("/login") 
+                        res.redirect("/login") 
                         console.log('reset mail has been sent')
                     }
                 })
