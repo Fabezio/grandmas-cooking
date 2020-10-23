@@ -17,20 +17,22 @@
 
   <div class="receipe" style="margin-top: 50px">
     <div>
+      <% for (thisreceipe of receipe) { %>
       <div class="item">
         <img
           class="rounded"
-          src=""
+          src="<%= thisreceipe.image %>"
           style="margin-top: 15px; border-radius: 30%"
           width="30%"
         />
         <div class="content">
           <div class="header">
-            <h3></h3>
+            <h3><%= thisreceipe.name %></h3>
           </div>
         </div>
+
         <div class="details">
-          <a href="/dashboard/myreceipes/"
+          <a href="/dashboard/myreceipes/<%= thisreceipe._id %>"
             ><button
               type="button"
               class="btn btn-success"
@@ -39,11 +41,15 @@
               View Details
             </button></a
           >
-          <form action="/dashboard/myreceipes/?_method=DELETE" method="POST">
+          <form
+            action="/dashboard/myreceipes/<%= thisreceipe._id %>?_method=DELETE"
+            method="POST"
+          >
             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
           </form>
         </div>
       </div>
+      <% } %>
     </div>
   </div>
 </div>
