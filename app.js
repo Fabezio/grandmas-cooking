@@ -56,7 +56,9 @@ const { base } = require("./models/user");
 const atlasUrl = `mongodb+srv://fabezio:${pw}@cluster0.jrkt0.mongodb.net/${db}?retryWrites=true&w=majority`;
 const localUrl = `mongodb://localhost/${db}`;
 // const atlasUrl = `mongodb+srv://fabezio:<password>@cluster0.jrkt0.mongodb.net/<dbname>?retryWrites=true&w=majority`
-const url = localUrl;
+const url = atlasUrl;
+
+//  mongodb+srv://fabezio:C0denCQRT@cluster0.jrkt0.mongodb.net/$cooking?retryWrites=true&w=majority
 
 mongoose.connect(url, {
   useNewUrlParser: true,
@@ -353,6 +355,19 @@ app
       }
     });
   });
+
+
+/*
+III  N    N   GGGG   RRRRR   EEEEEE  DDDDD   III  EEEEEE  N    N  TTTTTTT  SSSS  
+ I   N    N  G    G  R    R  E       D    D   I   E       N    N     T    S    S
+ I   NN   N  G       R    R  E       D    D   I   E       NN   N     T    S 
+ I   N N  N  G   GG  RRRRR   EEEEE   D    D   I   EEEEE   N N  N     T     SSSS 
+ I   N  N N  G    G  R  R    E       D    D   I   E       N  N N     T         S
+ I   N   NN  G    G  R   R   E       D    D   I   E       N   NN     T    S    S
+III  N    N   GGGG   R    R  EEEEEE  DDDDD   III  EEEEEE  N    N     T     SSSS  
+*/
+
+// LISTE
 app
   .route("/dashboard/myreceipes/:id/:ingredientId", isLoggedIn)
   .delete((req, res) => {
@@ -362,18 +377,6 @@ app
       if (!err) {
         req.flash("success", msg);
         res.redirect(`/dashboard/myreceipes/${req.params.id}`);
-      }
-    });
-  })
-  
-
-app
-  .route("/dashboard/myreceipes/:id/newingredient", isLoggedIn)
-  .get((req, res) => {
-    Receipe.findById({ _id: req.params.id }, (err, found) => {
-      console.log(err || "receipe found");
-      if (!err) {
-        res.render("newingredient", { receipe: found });
       }
     });
   })
@@ -397,6 +400,21 @@ app
       }
     )
   })
+
+  
+// NOUVEL INGREDIENT
+app
+  .route("/dashboard/myreceipes/:id/newingredient", isLoggedIn)
+  .get((req, res) => {
+    Receipe.findById({ _id: req.params.id }, (err, found) => {
+      console.log(err || "receipe found");
+      if (!err) {
+        res.render("newingredient", { receipe: found });
+      }
+    });
+  })
+  
+// MODIFIER L'INGREDIENT
 app
   .route("/dashboard/myreceipes/:id/:ingredientId/edit", isLoggedIn)
   .post((req, res) => {
@@ -422,6 +440,16 @@ app
       }
     );
   });
+
+/*
+FFFFFF     A     V     V   OOOO   U    U  RRRRR   III  TTTTTTT  EEEEEE   SSSS
+F         A A    V     V  O    O  U    U  R    R   I      T     E       S    S
+F         A A     V   V   O    O  U    U  R    R   I      T     E       S     
+FFFF     A   A    V   V   O    O  U    U  RRRRR    I      T     EEEEE    SSSS     
+F        AAAAA     V V    O    O  U    U  R  R     I      T     E            S
+F       A     A    V V    O    O  U    U  R   R    I      T     E       S    S
+F       A     A     V      OOOO    UUUU   R    R  III     T     EEEEEE   SSSS
+*/
 
 app.get("/dashboard/favourites", isLoggedIn, (req, res) => {
   res.render("favourites", {});
