@@ -17,48 +17,7 @@
 
   <body style="background-color: floralwhite">
     <div class="container-fluid">
-      <nav class="navbar navbar-expand-lg">
-        <h1 style="color: black">
-          <a href="/" style="text-decoration: none">Grandma's Cooking</a>
-        </h1>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard"
-                ><%= currentUser.username%></a
-              >
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard/favourites">Favourites</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard/myreceipes">Receipes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard/schedule">Schedules</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <%- include('partials/header')-%>
       <div class="infos-user" style="margin-top: -50px">
         <div class="img-profile" style="text-align: center">
           <img
@@ -75,15 +34,15 @@
         </div>
       </div>
 
-      <%- include('flashs) -%>
+      <%- include('flashs') -%>
 
       <div class="add-ingredient" style="margin-top: 30px; text-align: center">
         <h2>
-          <img src="" height="200px" width="200px" />
-          <div class="content"></div>
+          <img src="<%= receipe.image %>" height="200px" width="200px" />
+          <div class="content"><%= receipe.name %></div>
         </h2>
         <h3 style="font-family: itallic">Add Ingredient :</h3>
-        <form action="/dashboard/myreceipes/" method="POST">
+        <form action="/dashboard/myreceipes/<%= receipe._id %>" method="POST">
           <h4>Personal Information</h4>
           <div class="field">
             <label>Name:</label><br />

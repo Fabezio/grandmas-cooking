@@ -256,40 +256,108 @@ app.route("/dashboard").get(isLoggedIn, (req, res) => {
   res.render("dashboard", {});
 });
 
-// Recettes
+/*
+RRRRR   EEEEEE   CCCC   EEEEEE  III  PPPPP    EEEEEE   SSSS
+R    R  E       C    C  E        I   p    p   E       S    S
+R    R  E       C       E        I   P    P   E       S 
+RRRRR   EEEEE   C       EEEE     I   PPPPP    EEEEE    SSSS
+R  R    E       C       E        I   P        E            S
+R   R   E       C    C  E        I   P        E       S    S
+R    R  EEEEEE   CCCC   EEEEEE  III  P        EEEEEE   SSSS
+ */
 app.get("/dashboard/myreceipes", isLoggedIn, (req, res) => {
-  res.render("receipe", {});
+  Receipe.find({}, (err, receipe) => {
+    console.log(err || "receipes fetcehd");
+    if (!err) res.render("receipe", { receipe: receipe });
+  });
 });
 app
   .route("/dashboard/newreceipe", isLoggedIn)
   .get((req, res) => {
-    Receipe.find(
-      {
-        user: req.user.id,
-      },
-      (err, receipe) => {
-        console.log(err || "liste trouvée");
-        if (!err) res.render("newreceipe", { receipe: receipe });
-      }
-    );
+    res.render("newreceipe");
+
     // if(Receipes && Receipes.length) req.flash("success", "receipes found")
     // else req.flash("error", "no receipe yet")
   })
   .post((req, res) => {
     const newReceipe = new Receipe({
-      name: req.body.name,
-      image: req.body.image,
-      user: User.username,
+      name: req.body.receipe,
+      image: req.body.logo,
+      user: req.user.id,
+    });
+    newReceipe.save({}, (err) => {
+      console.log(err || "receipe added");
+      if (!err) {
+        flash("success", "receipe added");
+        res.redirect("/dashboard/myreceipes");
+      }
     });
   });
 
-app.get("/dashboard/favourites", (req, res) => {
+app
+  .route("/dashboard/myreceipes/:id")
+  .get((req, res) => {
+    Receipe.findOne(
+      {
+        user: req.user.id,
+        _id: req.params.id,
+      },
+      (err, foundReceipe) => {
+        console.log(err || "i found it!");
+        if (!err) {
+          Ingredient.find(
+            {
+              user: req.user.id,
+              receipe: req.params.id,
+            },
+            (err, foundIngredient) => {
+              console.log(err || "ingredient loaded");
+              if (!err) {
+                req.flash("success", "here is your receipe");
+                console.log(foundIngredient);
+                res.render("ingredients", {
+                  receipe: foundReceipe,
+                  ingredients: foundIngredient,
+                });
+              }
+            }
+          );
+        }
+      }
+    );
+  })
+  .post((req, res) => {
+    const newIngredient = {
+      user: req.user._id,
+      receipe: req.params.id,
+      name: req.body.name,
+      bestDish: req.body.dish,
+      quantity: req.body.quantity,
+    };
+    Ingredient.create(newIngredient, (err, newIngredient) => {
+      console.log(err || "ingredient added");
+      if (!err) {
+        req.flash("success", `${req.body.name} added`);
+        res.redirect(`/dashboard/myreceipes/${req.params.id}` );
+      }
+    });
+  });
+app.route("/dashboard/myreceipes/:id/newingredient").get((req, res) => {
+  Receipe.findById({ _id: req.params.id }, (err, found) => {
+    console.log(err || "receipe found");
+    if (!err) {
+      res.render("newingredient", { receipe: found });
+    }
+  });
+});
+
+app.get("/dashboard/favourites", isLoggedIn, (req, res) => {
   res.render("favourites", {});
 });
-app.get("/dashboard/schedule", (req, res) => {
+app.get("/dashboard/schedule", isLoggedIn, (req, res) => {
   res.render("schedule", {});
 });
-app.get("/dashboard/about", (req, res) => {
+app.get("/dashboard/about", isLoggedIn, (req, res) => {
   res.render("about", {});
 });
 // app.get("/edit", (req, res) =>{

@@ -1,0 +1,42 @@
+<%- include('partials/header'); -%>
+
+<div style="text-align: center">
+  <h2
+    style="
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: black;
+      font-family: itallic;
+    "
+  >
+    My Receipe
+  </h2>
+  
+
+  <div class="receipe" style="margin-top: 50px">
+    <div>
+      
+      <% for (thisreceipe of receipe) { %>
+      <div class="item">
+        <img
+          class="rounded"
+          src="<%= thisreceipe.image %>"
+          style="margin-top: 15px; border-radius: 30%"
+          width="30%"
+        />
+        <div class="content">
+          <div class="header">
+            <h3><%= thisreceipe.name %></h3>
+          </div>
+        </div>
+
+        
+      </div>
+      <% } %>
+      
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer'); -%>
