@@ -22,6 +22,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(methodOverride("_method"));
 
 // modeles
 const User = require("./models/user");
@@ -295,7 +296,7 @@ app
   });
 
 app
-  .route("/dashboard/myreceipes/:id")
+  .route("/dashboard/myreceipes/:id", isLoggedIn)
   .get((req, res) => {
     Receipe.findOne(
       {
@@ -338,18 +339,89 @@ app
       console.log(err || "ingredient added");
       if (!err) {
         req.flash("success", `${req.body.name} added`);
-        res.redirect(`/dashboard/myreceipes/${req.params.id}` );
+        res.redirect(`/dashboard/myreceipes/${req.params.id}`);
+      }
+    });
+  })
+  .delete((req, res) => {
+    Receipe.deleteOne({ _id: req.params.id }, (err) => {
+      const msg = "receipe deleted";
+      console.log(err || msg);
+      if (!err) {
+        req.flash("success", msg);
+        res.redirect(`/dashboard/myreceipes`);
       }
     });
   });
-app.route("/dashboard/myreceipes/:id/newingredient").get((req, res) => {
-  Receipe.findById({ _id: req.params.id }, (err, found) => {
-    console.log(err || "receipe found");
-    if (!err) {
-      res.render("newingredient", { receipe: found });
+app
+  .route("/dashboard/myreceipes/:id/:ingredientId", isLoggedIn)
+  .delete((req, res) => {
+    Ingredient.deleteOne({ _id: req.params.ingredientId }, (err) => {
+      const msg = "ingredient deleted";
+      console.log(err || msg);
+      if (!err) {
+        req.flash("success", msg);
+        res.redirect(`/dashboard/myreceipes/${req.params.id}`);
+      }
+    });
+  })
+  
+
+app
+  .route("/dashboard/myreceipes/:id/newingredient", isLoggedIn)
+  .get((req, res) => {
+    Receipe.findById({ _id: req.params.id }, (err, found) => {
+      console.log(err || "receipe found");
+      if (!err) {
+        res.render("newingredient", { receipe: found });
+      }
+    });
+  })
+  .put((req, res) => {
+    const updatedIngredient = {
+      name: req.body.name,
+      bestDish: req.body.dish,
+      quantity: req.body.quantity,
+      user: req.user.id,
+      receipe: req.params.id,
     }
+    Ingredient.findByIdAndUpdate(
+      {_id: req.params.ingredientId},
+      updatedIngredient,
+      (err, updatedData) => {
+        if (err) console.log(err)
+        else {
+          req.flash(`${updatedData.receipe} has been updated`)
+          res.redirect(`/dashboard/myreceipes/${req.params.id}`)
+        }
+      }
+    )
+  })
+app
+  .route("/dashboard/myreceipes/:id/:ingredientId/edit", isLoggedIn)
+  .post((req, res) => {
+    Receipe.findOne(
+      { _id: req.params.id, user: req.user.id },
+      (err, foundReceipe) => {
+        if (err) console.log(err);
+        else {
+          Ingredient.findOne(
+            { _id: req.params.ingredientId, receipe: req.params.id },
+            (err, foundIngredient) => {
+              if (err) console.log(err);
+              else {
+                req.flash("success", `${foundIngredient.name} found`);
+                res.render("edit", {
+                  ingredient: foundIngredient,
+                  receipe: foundReceipe,
+                });
+              }
+            }
+          );
+        }
+      }
+    );
   });
-});
 
 app.get("/dashboard/favourites", isLoggedIn, (req, res) => {
   res.render("favourites", {});
@@ -360,9 +432,6 @@ app.get("/dashboard/schedule", isLoggedIn, (req, res) => {
 app.get("/dashboard/about", isLoggedIn, (req, res) => {
   res.render("about", {});
 });
-// app.get("/edit", (req, res) =>{
-//     res.render("edit", {})
-// } )
 
 // recherche et suppression de tokens expirés
 Reset.find({ resetPasswordExpires: { $lt: Date.now() } }, (err, obj) => {
