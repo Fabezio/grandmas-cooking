@@ -525,8 +525,21 @@ SSSS   CCC   H   H  EEEEE  DDDD    UUU   LLLLL  EEEEE  SSSS
 
 */
 app.get('/dashboard/schedule', isLoggedIn, (req, res) => {
-  res.render('schedule', {})
+  Schedule.find({
+    user: req.user.id
+  }, (err, found) => {
+    if (err) console.log(err)
+    else{
+      req.flash("success", "found" + found.length + "scheds")
+      res.render('schedule', {})
+    }
+  })
 })
+
+
+
+
+
 app.get('/dashboard/about', isLoggedIn, (req, res) => {
   res.render('about', {})
 })
