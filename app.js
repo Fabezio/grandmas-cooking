@@ -253,6 +253,9 @@ app.get("/logout", (req, res) => {
   res.redirect("/login");
 });
 
+
+/*
+*/
 // menu abonné
 app.route("/dashboard").get(isLoggedIn, (req, res) => {
   console.log(req.user);
@@ -452,8 +455,35 @@ F       A     A     V      OOOO    UUUU   R    R  III     T     EEEEEE   SSSS
 */
 
 app.get("/dashboard/favourites", isLoggedIn, (req, res) => {
-  res.render("favourites", {});
+  Favourite.find({user: req.user.id}, (err, found) => {
+    if ( err)console.log(err)
+    else {
+      if (found.length > 0) {
+        req.flash("success", `there are ${found.length} favs`)
+        
+      } else {
+        req.flash("error", `No fav yet`)
+        // res.render("favourites");
+        
+      }
+      res.render("favourites", {favourites: found});
+    }
+  })
 });
+app.get("/dashboard/favourites/newfavourite", isLoggedIn, (req, res) => {
+  res.render("newfavourite", {});
+});
+
+
+
+/*
+ SSS   CCC   H   H  EEEEE  DDDD   U   U  L      EEEEE   SSS 
+S     C   C  H   H  E      D   D  U   U  L      E      S    
+ SSS  C      HHHHH  EEEE   D   D  U   U  L      EEEE    SSS
+    S C   C  H   H  E      D   D  U   U  L      E          S
+SSSS   CCC   H   H  EEEEE  DDDD    UUU   LLLLL  EEEEE  SSSS
+
+*/
 app.get("/dashboard/schedule", isLoggedIn, (req, res) => {
   res.render("schedule", {});
 });
