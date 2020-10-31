@@ -6,12 +6,12 @@
       <%- include('partials/header')-%>
       <div class="infos-user" style="margin-top: -50px">
         <div class="img-profile" style="text-align: center">
-          <img
+          <!-- <img
             class="girl"
             src="../../../images/girl.jpg"
             width="170px"
             style="border-radius: 50%"
-          />
+          /> -->
           <a class="item" href="/dashboard">
             <h4
               style="text-align: center; color: black; text-decoration: none"
@@ -22,55 +22,68 @@
 
       <%- include('flashs') -%>
 
-      <div class="add-ingredient" style="margin-top: 30px; text-align: center">
-        <h2>
-          <img src="<%= receipe.image %>" height="200px" width="200px" />
-          <div class="content"><%= receipe.name %></div>
-        </h2>
-        <h3 style="font-family: itallic">Add Ingredient :</h3>
-        <form action="/dashboard/myreceipes/<%= receipe._id %>" method="POST">
-          <h4>Personal Information</h4>
-          <div class="field">
-            <label>Name:</label><br />
-            <input
-              type="text"
-              placeholder="name"
-              name="name"
-              required
-              autocomplete="off"
-            />
+      <div
+        class="add-ingredient mt-4"
+        style="margin-top: 30px; text-align: center"
+      >
+        <div class="row pt-5">
+          <div class="offset-md-2 col-md-4 ">
+            <h2>
+              <img src="<%= receipe.image %>" height="200px" width="200px" />
+              <div class="content"><%= receipe.name %></div>
+            </h2>
           </div>
-          <div class="field">
-            <label>Best Dish To Put In:</label><br />
-            <input
-              type="text"
-              placeholder="best dish to make with"
-              name="dish"
-              required
-              autocomplete="off"
-            />
-          </div>
-          <div class="field">
-            <label>Quantity</label><br />
-            <input
-              type="text"
-              placeholder="quantity"
-              name="quantity"
-              required
-              autocomplete="off"
-            />
-          </div>
-
-          <div class="field">
-            <button
-              type="submit"
-              class="btn btn-success"
-              style="margin-top: 15px"
+          <div class="col-md-4">
+            <h3 style="font-family: itallic">Add Ingredient :</h3>
+            <form
+              action="/dashboard/myreceipes/<%= receipe._id %>"
+              method="POST"
             >
-              Submit
-            </button>
+              <h4>Personal Information</h4>
+              <div class="field">
+                <label>Name:</label><br />
+                <input
+                  type="text"
+                  placeholder="name"
+                  name="name"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field">
+                <label>Best Dish To Put In:</label><br />
+                <input
+                  type="text"
+                  placeholder="best dish to make with"
+                  name="dish"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field">
+                <label>Quantity</label><br />
+                <input
+                  type="text"
+                  placeholder="quantity"
+                  name="quantity"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+
+              <div class="field">
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  style="margin-top: 15px"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+          <div class="offset-md-2"></div>
+        </div>
         <%- include('partials/footer'); -%>
       </div>
     </div>

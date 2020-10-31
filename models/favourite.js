@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 
 const favoriteSchema = new mongoose.Schema({
   receipe: String,
+  user: String,
+  desc: String,
   title: String,
   // name: String,
   image: String,
-  desc: String,
-  user: String,
   date: {
     type: Date,
     default: Date.now(),

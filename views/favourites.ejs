@@ -9,10 +9,13 @@
   >
 
   <div class="container" style="text-align: center">
+    <% if (favourites.length > 0) { %>
     <div class="row">
       <div class="col-lg-4">
+        <% for(fav of favourites) { %>
+
         <div class="card" style="width: 15rem">
-          <img class="card-img-top" src="" alt="Card image cap" />
+          <img class="card-img-top" src="<%= fav.image %>" alt="Card image cap" />
           <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
@@ -29,8 +32,12 @@
             </form>
           </div>
         </div>
+        <% } %>
       </div>
     </div>
+    <% } else { %>
+    <div>No fav now</div>
+    <% } %>
   </div>
 </div>
 
