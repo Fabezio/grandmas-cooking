@@ -11,16 +11,16 @@
   <div class="container" style="text-align: center">
     <% if (favourites.length > 0) { %>
     <div class="row">
+      <% for(fav of favourites) { %>
       <div class="col-lg-4">
-        <% for(fav of favourites) { %>
 
         <div class="card" style="width: 15rem">
           <img class="card-img-top" src="<%= fav.image %>" alt="Card image cap" />
           <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary"></a>
-            <form action="/dashboard/favourites/?_method=DELETE" method="POST">
+            <h5 class="card-title"><%= fav.title %></h5>
+            <p class="card-text"><%= fav.desc %></p>
+            <a href="#" class="btn btn-primary"><%= fav.date %></a>
+            <form action="/dashboard/favourites/<%= fav._id %>?_method=DELETE" method="POST">
               <input type="hidden" name="_method" value="DELETE" />
               <button
                 type="submit"
@@ -32,8 +32,8 @@
             </form>
           </div>
         </div>
-        <% } %>
       </div>
+      <% } %>
     </div>
     <% } else { %>
     <div>No fav now</div>
