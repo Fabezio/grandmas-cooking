@@ -270,7 +270,7 @@ R    R  EEEEEE   CCCC   EEEEEE  III  P        EEEEEE   SSSS
  */
 app.get("/dashboard/myreceipes", isLoggedIn, (req, res) => {
   Receipe.find({}, (err, receipe) => {
-    console.log(err || "receipes fetcehd");
+    console.log(err || "receipes fetched");
     if (!err) res.render("receipe", { receipe: receipe });
   });
 });
