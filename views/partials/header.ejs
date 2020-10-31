@@ -1,0 +1,78 @@
+<html>
+  <%- include('head.ejs') -%> 
+
+  <body style="background-color: floralwhite">
+    <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg">
+        <h1 style="color: black">
+          <a href="/" style="text-decoration: none">Grandma's Cooking</a>
+        </h1>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+
+              <a class="nav-link" href="/dashboard"
+                ><%= currentUser.username.toUpperCase() %></a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard/myreceipes">Receipes</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard/favourites">Favourites</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard/schedule">Schedule</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="infos-user" style="margin-top: -50px">
+        <figure class="img-profile mb-3" style="text-align: center">
+
+          <img
+            class="girl"
+            src="https://cdn2.iconfinder.com/data/icons/flatfaces-everyday-people-square/128/bald_beard_man_face_avatar-512.png"
+            width="170px"
+            style="border-radius: 50%"
+          />
+          <figcaption>
+            <a class="item" href="/dashboard">
+              <h4
+              class="my-3 text-center text-black font-weight-light"
+              style="text-decoration: none"
+              >
+              <%= currentUser.username %>
+            </h4>
+          </a>
+          
+        </figcaption>
+        </figure>
+      </div>
+
+      <%- include('../flashs') -%>
+    </div>
+  </body>
+</html>
