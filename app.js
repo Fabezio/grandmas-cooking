@@ -13,6 +13,14 @@ const passportLocalStrategy = require('passport-local-mongoose')
 const randToken = require('rand-token')
 const nodemailer = require('nodemailer')
 
+/* 
+EEEEEEE NN   NN VV     VV     SSSSS  EEEEEEE TTTTTTT UU   UU PPPPPP  
+EE      NNN  NN VV     VV    SS      EE        TTT   UU   UU PP   PP 
+EEEEE   NN N NN  VV   VV      SSSSS  EEEEE     TTT   UU   UU PPPPPP  
+EE      NN  NNN   VV VV           SS EE        TTT   UU   UU PP      
+EEEEEEE NN   NN    VVV        SSSSS  EEEEEEE   TTT    UUUUU  PP      
+ */
+
 app.use(
   session({
     secret: 'mysecret',
@@ -25,8 +33,8 @@ app.use(passport.session())
 app.use(methodOverride('_method'))
 
 // routes
-const dash =" /dashboard"
-const dashRec = dash + "/myreceipes"
+const dash = ' /dashboard'
+const dashRec = dash + '/myreceipes'
 
 // modeles
 const User = require('./models/user')
@@ -43,6 +51,15 @@ app.use(express.static('public'))
 // prise en compte données formulaires
 app.use(bodyParser.urlencoded({ extended: false }))
 
+/*
+MM    MM  SSSSS    GGGG     DDDDD   IIIII  SSSSS  PPPPPP  LL        AAA   YY   YY 
+MMM  MMM SS       GG  GG    DD  DD   III  SS      PP   PP LL       AAAAA  YY   YY 
+MM MM MM  SSSSS  GG         DD   DD  III   SSSSS  PPPPPP  LL      AA   AA  YYYYY  
+MM    MM      SS GG   GG    DD   DD  III       SS PP      LL      AAAAAAA   YYY   
+MM    MM  SSSSS   GGGGGG    DDDDDD  IIIII  SSSSS  PP      LLLLLLL AA   AA   YYY   
+                                                                                  
+
+ */
 // flashes
 app.use(flash())
 app.use((req, res, next) => {
@@ -52,13 +69,21 @@ app.use((req, res, next) => {
   next()
 })
 function successFlash(msg) {
-  if(req.flash) req.flash('success', msg)
+  if (req.flash) req.flash('success', msg)
 }
 function errorFlash(msg) {
-  if(req.flash) req.flash('error', msg)
+  if (req.flash) req.flash('error', msg)
 }
 
-const PORT = 3000
+/* 
+DDDDD   BBBBB        AAA    CCCCC   CCCCC  EEEEEEE  SSSSS   SSSSS  
+DD  DD  BB   B      AAAAA  CC    C CC    C EE      SS      SS      
+DD   DD BBBBBB     AA   AA CC      CC      EEEEE    SSSSS   SSSSS  
+DD   DD BB   BB    AAAAAAA CC    C CC    C EE           SS      SS 
+DDDDDD  BBBBBB     AA   AA  CCCCC   CCCCC  EEEEEEE  SSSSS   SSSSS  
+                                                                   
+
+ */
 const pw = 'C0denCQRT'
 const db = 'cooking'
 const { base } = require('./models/user')
@@ -88,16 +113,49 @@ function isLoggedIn(req, res, next) {
   }
 }
 
+// const tempo = 1500
 // chemins _________________
 // principal (hors connexion)
+/* 
+
+
+MM    MM   AAA   IIIII NN   NN    IIIII NN   NN DDDDD   EEEEEEE XX    XX 
+MMM  MMM  AAAAA   III  NNN  NN     III  NNN  NN DD  DD  EE       XX  XX  
+MM MM MM AA   AA  III  NN N NN     III  NN N NN DD   DD EEEEE     XXXX   
+MM    MM AAAAAAA  III  NN  NNN     III  NN  NNN DD   DD EE       XX  XX  
+MM    MM AA   AA IIIII NN   NN    IIIII NN   NN DDDDDD  EEEEEEE XX    XX 
+                                                                         
+
+
+*/
+
 app.get('/', (req, res) => {
   console.log(req.user)
   res.render('index', {})
 })
-const tempo = 1500
+
+/* 
+UU   UU  SSSSS  EEEEEEE RRRRRR  
+UU   UU SS      EE      RR   RR 
+UU   UU  SSSSS  EEEEE   RRRRRR  
+UU   UU      SS EE      RR  RR  
+ UUUUU   SSSSS  EEEEEEE RR   RR 
+                                
+ */
+/* 
+
+
+LL       OOOOO    GGGG  IIIII NN   NN 
+LL      OO   OO  GG  GG  III  NNN  NN 
+LL      OO   OO GG       III  NN N NN 
+LL      OO   OO GG   GG  III  NN  NNN 
+LLLLLLL  OOOO0   GGGGGG IIIII NN   NN 
+                                      
+
+ */
 app
   .route('/login')
-  .get((req, res) => res.render('login', {}))
+  .get((_, res) => res.render('login', {}))
   .post((req, res) => {
     const user = new User({
       username: req.body.username,
@@ -120,35 +178,18 @@ app
     })
   })
 
-app
-  .route('/signup')
-  .get((req, res) => res.render('signup', {}))
-  .post((req, res) => {
-    const newUser = new User({
-      username: req.body.username,
-    })
-    User.register(newUser, req.body.password, (err, user) => {
-      if (err) {
-        console.log(err)
-        res.render('signup', {})
-      } else {
-        passport.authenticate('local')(req, res, function () {
-          req.flash('success', `how do you do, ${req.body.username}`)
-          // req.flash("success", `Bienvenue, ${user.username}`)
-          // setTimeout(()=> {
-
-          // }, tempo)
-          res.redirect('/login')
-        })
-      }
-    })
-  })
-
-app.route('/about').get((req, res) => res.render('about', {}))
+/*   FFFFFFF  OOOOO  RRRRRR    GGGG   OOOOO  TTTTTTT TTTTTTT EEEEEEE NN   NN    PPPPPP    AAA    SSSSS   SSSSS  WW      WW DDDDD   
+  FF      OO   OO RR   RR  GG  GG OO   OO   TTT     TTT   EE      NNN  NN    PP   PP  AAAAA  SS      SS      WW      WW DD  DD  
+  FFFF    OO   OO RRRRRR  GG      OO   OO   TTT     TTT   EEEEE   NN N NN    PPPPPP  AA   AA  SSSSS   SSSSS  WW   W  WW DD   DD 
+  FF      OO   OO RR  RR  GG   GG OO   OO   TTT     TTT   EE      NN  NNN    PP      AAAAAAA      SS      SS  WW WWW WW DD   DD 
+  FF       OOOO0  RR   RR  GGGGGG  OOOO0    TTT     TTT   EEEEEEE NN   NN    PP      AA   AA  SSSSS   SSSSS    WW   WW  DDDDDD  
+                                                                                                                                
+  
+ */
 
 app
   .route('/forgot')
-  .get((req, res) => res.render('forgot', {}))
+  .get((_, res) => res.render('forgot', {}))
   .post((req, res) => {
     User.findOne({ username: req.body.username }, (err, userFound) => {
       if (err) {
@@ -176,7 +217,7 @@ app
           subject: 'link to reset your password',
           text: `click here to reset your password: http://localhost:3000/reset/${token}`,
         }
-        transporter.sendMail(mailOptions, (err, response) => {
+        transporter.sendMail(mailOptions, (err, _) => {
           if (err) console.log(err)
           else {
             // console.log(mailOptions)
@@ -236,7 +277,7 @@ app
                   Reset.findOneAndUpdate(
                     { resetPassordToken: req.params.token },
                     updatedReset,
-                    (err, obj1) => {
+                    (err, _) => {
                       if (err) console.log(err)
                       res.redirect('/login')
                       //     else {
@@ -256,6 +297,43 @@ app
     )
   })
 
+/* 
+
+ SSSSS  IIIII   GGGG  NN   NN UU   UU PPPPPP  
+SS       III   GG  GG NNN  NN UU   UU PP   PP 
+ SSSSS   III  GG      NN N NN UU   UU PPPPPP  
+     SS  III  GG   GG NN  NNN UU   UU PP      
+ SSSSS  IIIII  GGGGGG NN   NN  UUUUU  PP      
+                                              
+
+ */
+
+app
+  .route('/signup')
+  .get((_, res) => res.render('signup', {}))
+  .post((req, res) => {
+    const newUser = new User({
+      username: req.body.username,
+    })
+    User.register(newUser, req.body.password, (err, _) => {
+      if (err) {
+        console.log(err)
+        res.render('signup', {})
+      } else {
+        passport.authenticate('local')(req, res, function () {
+          req.flash('success', `how do you do, ${req.body.username}`)
+          // req.flash("success", `Bienvenue, ${user.username}`)
+          // setTimeout(()=> {
+
+          // }, tempo)
+          res.redirect('/login')
+        })
+      }
+    })
+  })
+
+app.route('/about').get((_, res) => res.render('about', {}))
+
 app.get('/logout', (req, res) => {
   req.logout()
   req.flash('error', 'you have been logged out')
@@ -264,6 +342,16 @@ app.get('/logout', (req, res) => {
 })
 
 /*
+
+
+DDDDD     AAA    SSSSS  HH   HH BBBBB    OOOOO    AAA   RRRRRR  DDDDD   
+DD  DD   AAAAA  SS      HH   HH BB   B  OO   OO  AAAAA  RR   RR DD  DD  
+DD   DD AA   AA  SSSSS  HHHHHHH BBBBBB  OO   OO AA   AA RRRRRR  DD   DD 
+DD   DD AAAAAAA      SS HH   HH BB   BB OO   OO AAAAAAA RR  RR  DD   DD 
+DDDDDD  AA   AA  SSSSS  HH   HH BBBBBB   OOOO0  AA   AA RR   RR DDDDDD  
+                                                                        
+
+
  */
 // menu abonné
 app.route('/dashboard', isLoggedIn).get((req, res) => {
@@ -272,13 +360,15 @@ app.route('/dashboard', isLoggedIn).get((req, res) => {
 })
 
 /*
-RRRRR   EEEEEE   CCCC   EEEEEE  III  PPPPP    EEEEEE   SSSS
-R    R  E       C    C  E        I   p    p   E       S    S
-R    R  E       C       E        I   P    P   E       S 
-RRRRR   EEEEE   C       EEEE     I   PPPPP    EEEEE    SSSS
-R  R    E       C       E        I   P        E            S
-R   R   E       C    C  E        I   P        E       S    S
-R    R  EEEEEE   CCCC   EEEEEE  III  P        EEEEEE   SSSS
+
+RRRRRR  EEEEEEE  CCCCC  EEEEEEE IIIII PPPPPP  EEEEEEE  SSSSS  
+RR   RR EE      CC    C EE       III  PP   PP EE      SS      
+RRRRRR  EEEEE   CC      EEEEE    III  PPPPPP  EEEEE    SSSSS  
+RR  RR  EE      CC    C EE       III  PP      EE           SS 
+RR   RR EEEEEEE  CCCCC  EEEEEEE IIIII PP      EEEEEEE  SSSSS  
+                                                              
+
+
  */
 app.get('/dashboard/myreceipes', isLoggedIn, (req, res) => {
   Receipe.find({}, (err, receipe) => {
@@ -349,7 +439,7 @@ app
       bestDish: req.body.dish,
       quantity: req.body.quantity,
     }
-    Ingredient.create(newIngredient, (err, newIngredient) => {
+    Ingredient.create(newIngredient, (err, _) => {
       console.log(err || 'ingredient added')
       if (!err) {
         req.flash('success', `${req.body.name} added`)
@@ -369,13 +459,15 @@ app
   })
 
 /*
-III  N    N   GGGG   RRRRR   EEEEEE  DDDDD   III  EEEEEE  N    N  TTTTTTT  SSSS  
- I   N    N  G    G  R    R  E       D    D   I   E       N    N     T    S    S
- I   NN   N  G       R    R  E       D    D   I   E       NN   N     T    S 
- I   N N  N  G   GG  RRRRR   EEEEE   D    D   I   EEEEE   N N  N     T     SSSS 
- I   N  N N  G    G  R  R    E       D    D   I   E       N  N N     T         S
- I   N   NN  G    G  R   R   E       D    D   I   E       N   NN     T    S    S
-III  N    N   GGGG   R    R  EEEEEE  DDDDD   III  EEEEEE  N    N     T     SSSS  
+
+
+IIIII NN   NN   GGGG  RRRRRR  EEEEEEE DDDDD   IIIII EEEEEEE NN   NN TTTTTTT  SSSSS  
+ III  NNN  NN  GG  GG RR   RR EE      DD  DD   III  EE      NNN  NN   TTT   SS      
+ III  NN N NN GG      RRRRRR  EEEEE   DD   DD  III  EEEEE   NN N NN   TTT    SSSSS  
+ III  NN  NNN GG   GG RR  RR  EE      DD   DD  III  EE      NN  NNN   TTT        SS 
+IIIII NN   NN  GGGGGG RR   RR EEEEEEE DDDDDD  IIIII EEEEEEE NN   NN   TTT    SSSSS  
+                                                                                    
+
 */
 
 // LISTE
@@ -405,7 +497,7 @@ app
       (err, updatedData) => {
         if (err) console.log(err)
         else {
-          req.flash("success",`${updatedData.receipe} has been updated`)
+          req.flash('success', `${updatedData.receipe} has been updated`)
           res.redirect(`/dashboard/myreceipes/${req.params.id}`)
         }
       },
@@ -452,13 +544,15 @@ app
   })
 
 /*
-FFFFFF     A     V     V   OOOO   U    U  RRRRR   III  TTTTTTT  EEEEEE   SSSS
-F         A A    V     V  O    O  U    U  R    R   I      T     E       S    S
-F         A A     V   V   O    O  U    U  R    R   I      T     E       S     
-FFFF     A   A    V   V   O    O  U    U  RRRRR    I      T     EEEEE    SSSS     
-F        AAAAA     V V    O    O  U    U  R  R     I      T     E            S
-F       A     A    V V    O    O  U    U  R   R    I      T     E       S    S
-F       A     A     V      OOOO    UUUU   R    R  III     T     EEEEEE   SSSS
+
+
+FFFFFFF   AAA   VV     VV  OOOOO  UU   UU RRRRRR  IIIII TTTTTTT EEEEEEE  SSSSS  
+FF       AAAAA  VV     VV OO   OO UU   UU RR   RR  III    TTT   EE      SS      
+FFFF    AA   AA  VV   VV  OO   OO UU   UU RRRRRR   III    TTT   EEEEE    SSSSS  
+FF      AAAAAAA   VV VV   OO   OO UU   UU RR  RR   III    TTT   EE           SS 
+FF      AA   AA    VVV     OOOO0   UUUUU  RR   RR IIIII   TTT   EEEEEEE  SSSSS  
+                                                                                
+
 */
 
 app
@@ -510,63 +604,66 @@ app.route('/dashboard/favourites/:id', isLoggedIn).delete((req, res) => {
   Favourite.deleteOne({ _id: req.params.id }, (err) => {
     if (err) console.log(err)
     else {
-      flash("success", 'fav deleted')
+      flash('success', 'fav deleted')
       res.redirect('/dashboard/favourites')
     }
   })
 })
 
 /*
- SSS   CCC   H   H  EEEEE  DDDD   U   U  L      EEEEE   SSS 
-S     C   C  H   H  E      D   D  U   U  L      E      S    
- SSS  C      HHHHH  EEEE   D   D  U   U  L      EEEE    SSS
-    S C   C  H   H  E      D   D  U   U  L      E          S
-SSSS   CCC   H   H  EEEEE  DDDD    UUU   LLLLL  EEEEE  SSSS
-
-*/
-app.route('/dashboard/schedule', isLoggedIn).get( (req, res) => {
-  Schedule.find({
-    user: req.user.id
-  }, (err, found) => {
-    if (err) console.log(err)
-    else{
-      req.flash("success", `${found.length} schedule${found.length > 1 ? 's' : ''} found`)
-      res.render('schedule', {schedules: found})
-    }
+ SSSSS   CCCCC  HH   HH EEEEEEE DDDDD   UU   UU LL      EEEEEEE  SSSSS  
+SS      CC    C HH   HH EE      DD  DD  UU   UU LL      EE      SS      
+ SSSSS  CC      HHHHHHH EEEEE   DD   DD UU   UU LL      EEEEE    SSSSS  
+     SS CC    C HH   HH EE      DD   DD UU   UU LL      EE           SS 
+ SSSSS   CCCCC  HH   HH EEEEEEE DDDDDD   UUUUU  LLLLLLL EEEEEEE  SSSSS  
+ */
+app
+  .route('/dashboard/schedule', isLoggedIn)
+  .get((req, res) => {
+    Schedule.find(
+      {
+        user: req.user.id,
+      },
+      (err, found) => {
+        if (err) console.log(err)
+        else {
+          req.flash(
+            'success',
+            `${found.length} schedule${found.length > 1 ? 's' : ''} found`,
+          )
+          res.render('schedule', { schedules: found })
+        }
+      },
+    )
   })
-})
-
-app.route('/dashboard/schedule/:id', isLoggedIn)
-.get((req, res) => {
-  Schedule.findOne({_id: req.params.id}, err => {
-    if (err) console.log(err, found)
-    else {
-      res.redirect("/dashboard/schedule")
-
+  .post((req, res) => {
+    const newSchedule = {
+      ReceipeName: req.body.receipename,
+      ScheduleDate: req.body.scheduleDate,
+      time: req.body.time,
+      user: req.user.id,
     }
-  })
-
-app.post("/dashboard/schedule/newschedule", isLoggedIn, (req, res) => {
-  const newSchedule = {
-    ReceipeName: req.receipe.id,
-    time: req.body.time,
-    ScheduleDate: req.body.date,
-  }
-    Schedule.findOne({_id: req.params.id}, err => {
-      if (err) console.log(err, found)
+    Schedule.create(newSchedule, (err) => {
+      if (err) console.log(err)
       else {
-        res.redirect("/dashboard/schedule")
-  
+        res.redirect('/dashboard/schedule')
       }
     })
   })
+
+app.get('/dashboard/schedule/newschedule', isLoggedIn, (_, res) => {
+  res.render('newSchedule')
+})
+app.route('/dashboard/schedule/:id', isLoggedIn).get((req, res) => {
+  Schedule.findOne({ _id: req.params.id }, (err, found) => {
+    if (err) console.log(err)
+    else {
+      res.render('/dashboard/schedule/' + found._id, { schedule: found })
+    }
+  })
 })
 
-
-
-
-
-app.get('/dashboard/about', isLoggedIn, (req, res) => {
+app.get('/dashboard/about', isLoggedIn, (_, res) => {
   res.render('about', {})
 })
 
@@ -580,6 +677,17 @@ Reset.find({ resetPasswordExpires: { $lt: Date.now() } }, (err, obj) => {
 })
 // console.log(expires)
 
+/* 
+
+RRRRRR   OOOOO  UU   UU TTTTTTT IIIII NN   NN   GGGG  
+RR   RR OO   OO UU   UU   TTT    III  NNN  NN  GG  GG 
+RRRRRR  OO   OO UU   UU   TTT    III  NN N NN GG      
+RR  RR  OO   OO UU   UU   TTT    III  NN  NNN GG   GG 
+RR   RR  OOOO0   UUUUU    TTT   IIIII NN   NN  GGGGGG 
+                                                      
+ */
+
+const PORT = 3000
 app.listen(PORT, () => {
   console.log("Serveur à l'écoute... ")
   console.log(`port utilisé: ${PORT}`)
