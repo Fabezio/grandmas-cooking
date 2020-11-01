@@ -2,28 +2,37 @@
 
 <div style="text-align: center">
   <h2 style="margin-top: 40px; color: black; font-family: itallic">
-    Schedule:
+    Schedule<% schedules.length > 1 ? "s" : "" %>:
   </h2>
   <a href="/dashboard/schedule/newschedule"
-    ><button type="button" class="btn btn-success">New Schedule</button></a
+    ><button type="button" class="btn btn-info">New Schedule</button></a
   >
-
+  <% if (schedules.length > 0) { %>
   <div class="infos-schedule" style="margin-top: 30px">
-    <h3></h3>
-    <p>Time:</p>
-    <p>Date:</p>
-    <div class="item">
-      <div class="delete-schedule">
-        <form action="/dashboard/schedule/?_method=DELETE" method="POST">
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit" class="btn btn-danger" value="delete">
-            Delete
-          </button>
-        </form>
+    <% schedules.forEach(schedule => { %>
+
+      <h3><%= schedule.ReceipeName  %> </h3>
+      <p>Time: <%= schedule.time %> </p>
+      <p>Date: <%= schedule.ScheduleDate %> </p>
+      <div class="item">
+        <div class="delete-schedule">
+          <form action="/dashboard/schedule/<%= schedule._id %>?_method=DELETE" method="POST">
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit" class="btn btn-danger" value="delete">
+              Delete
+            </button>
+          </form>
+        </div>
+        <div class="content">
+          <span>Added on : <%= schedule.date %> </span>
+        </div>
       </div>
-      <div class="content">
-        <span>Added on : </span>
-      </div>
+      <% }) %>
     </div>
-  </div>
+<% } else { %>
+  <p class="text-info mt-4">
+    add a shedule above
+  </p>
+<% } %>
+
 </div>

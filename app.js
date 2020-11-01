@@ -524,15 +524,41 @@ S     C   C  H   H  E      D   D  U   U  L      E      S
 SSSS   CCC   H   H  EEEEE  DDDD    UUU   LLLLL  EEEEE  SSSS
 
 */
-app.get('/dashboard/schedule', isLoggedIn, (req, res) => {
+app.route('/dashboard/schedule', isLoggedIn).get( (req, res) => {
   Schedule.find({
     user: req.user.id
   }, (err, found) => {
     if (err) console.log(err)
     else{
-      req.flash("success", "found" + found.length + "scheds")
-      res.render('schedule', {})
+      req.flash("success", `${found.length} schedule${found.length > 1 ? 's' : ''} found`)
+      res.render('schedule', {schedules: found})
     }
+  })
+})
+
+app.route('/dashboard/schedule/:id', isLoggedIn)
+.get((req, res) => {
+  Schedule.findOne({_id: req.params.id}, err => {
+    if (err) console.log(err, found)
+    else {
+      res.redirect("/dashboard/schedule")
+
+    }
+  })
+
+app.post("/dashboard/schedule/newschedule", isLoggedIn, (req, res) => {
+  const newSchedule = {
+    ReceipeName: req.receipe.id,
+    time: req.body.time,
+    ScheduleDate: req.body.date,
+  }
+    Schedule.findOne({_id: req.params.id}, err => {
+      if (err) console.log(err, found)
+      else {
+        res.redirect("/dashboard/schedule")
+  
+      }
+    })
   })
 })
 
